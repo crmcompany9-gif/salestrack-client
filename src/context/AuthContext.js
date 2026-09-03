@@ -1,6 +1,8 @@
 import { createContext, useContext, useState } from 'react';
 import axios from 'axios';
 
+axios.defaults.baseURL = 'https://salestrack-server.onrender.com';
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
