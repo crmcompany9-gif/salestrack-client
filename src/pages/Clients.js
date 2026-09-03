@@ -17,12 +17,17 @@ export default function Clients() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch]   = useState('');
   const [filter, setFilter]   = useState('');
+  const [sending, setSending] = useState(null); // client id being sent
   const isManager = user?.role === 'manager';
+
+  const load = (f = filter) => {
+    const params = f ? { status: f } : {};
+    axios.get('/api/clients', { params }).then(r => { setClients(r.data); setLoading(false); });
+  };
 
   useEffect(() => {
     document.getElementById('page-title').textContent = 'Clients';
-    const params = filter ? { status: filter } : {};
-    axios.get('/api/clients', { params }).then(r => { setClients(r.data); setLoading(false); });
+    load();
   }, [filter]);
 
   const visible = clients.filter(c => {
@@ -30,6 +35,24 @@ export default function Clients() {
     const q = search.toLowerCase();
     return c.name?.toLowerCase().includes(q) || c.phone?.includes(q) || c.city?.toLowerCase().includes(q);
   });
+
+  const sendToERP = async (client) => {
+    if (!window.confirm(`Send "${client.name}" to GrowTrack ERP?\n\nThey will appear in Stage 1 (Accounts & MOU) automatically.`)) return;
+    setSending(client._id);
+    try {
+      const res = await axios.post(`/api/clients/${client._id}/send-to-erp`);
+      if (res.data.alreadyExisted) {
+        alert(`⚠️ ${client.name} already existed in ERP — marked as sent.`);
+      } else {
+        alert(`✅ ${client.name} successfully added to GrowTrack ERP at Stage 1!`);
+      }
+      load();
+    } catch (err) {
+      alert(`❌ Failed: ${err.response?.data?.message || 'Something went wrong'}`);
+    } finally {
+      setSending(null);
+    }
+  };
 
   if (loading) return <div className="loading">Loading clients…</div>;
 
@@ -49,6 +72,11 @@ export default function Clients() {
       <div className="card">
         <div className="card-head">
           <div className="card-title">{visible.length} clients</div>
+          {isManager && (
+            <div style={{fontSize:11,color:'var(--text3)'}}>
+              Green "Send to ERP" button appears for Interested clients
+            </div>
+          )}
         </div>
         <div className="table-wrap">
           <table>
@@ -62,11 +90,12 @@ export default function Clients() {
                 <th>Last contact</th>
                 <th>Follow-up</th>
                 <th>Calls</th>
+                {isManager && <th>ERP</th>}
               </tr>
             </thead>
             <tbody>
               {visible.length === 0 && (
-                <tr><td colSpan="8" className="loading">No clients found</td></tr>
+                <tr><td colSpan="9" className="loading">No clients found</td></tr>
               )}
               {visible.map(client => {
                 const overdue = isOverdue(client.nextFollowUp);
@@ -102,6 +131,26 @@ export default function Clients() {
                       {dueSoon && <span className="duesoon-tag">Due soon</span>}
                     </td>
                     <td data-label="Total calls" className="td-light">{client.totalCalls}</td>
+
+                    {/* Send to ERP — manager only */}
+                    {isManager && (
+                      <td data-label="ERP">
+                        {client.sentToERP ? (
+                          <span style={{fontSize:11,color:'var(--success-text)',fontWeight:600}}>✓ In ERP</span>
+                        ) : client.status === 'interested' ? (
+                          <button
+                            className="btn primary"
+                            style={{fontSize:11,padding:'4px 10px',background:'var(--success)',borderColor:'var(--success)'}}
+                            onClick={() => sendToERP(client)}
+                            disabled={sending === client._id}
+                          >
+                            {sending === client._id ? 'Sending…' : 'Send to ERP'}
+                          </button>
+                        ) : (
+                          <span style={{fontSize:11,color:'var(--text3)'}}>—</span>
+                        )}
+                      </td>
+                    )}
                   </tr>
                 );
               })}
