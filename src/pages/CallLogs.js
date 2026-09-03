@@ -42,7 +42,7 @@ export default function CallLogs() {
       <div className="filter-bar">
         <div className="search-box">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input placeholder="Search client or employee…" value={search} onChange={e => setSearch(e.target.value)} />
+          <input placeholder="Search clie employe…" value={search} onChange={e => setSearch(e.target.value)} />
         </div>
         {FILTERS.map(f => (
           <div key={f.value} className={`filter-chip${filter===f.value?' active':''}`}
