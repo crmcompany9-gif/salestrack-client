@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { initials, avatarColor, outcomeBadge, outcomeLabel, fmtDateTime, PhoneIcon } from '../utils/helpers';
+import NoticeBoard from '../components/NoticeBoard';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -23,6 +24,9 @@ export default function Dashboard() {
 
   return (
     <>
+      {/* Notice Board */}
+      <NoticeBoard />
+
       {/* Stats strip */}
       <div className="stats-grid">
         <div className="stat accent-left">
