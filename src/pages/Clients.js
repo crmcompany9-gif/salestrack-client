@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { initials, avatarColor, outcomeBadge, outcomeLabel, fmtDate, isOverdue, isDueSoon, PhoneIcon } from '../utils/helpers';
+import { initials, avatarColor, outcomeBadge, outcomeLabel, fmtDate, isOverdue, isDueSoon, PhoneIcon, makeExotelCall } from '../utils/helpers';
 
 const STATUS_FILTERS = [
   { label:'All', value:'' },
@@ -106,10 +106,10 @@ export default function Clients() {
                     <td data-label="Phone">
                       <div className="call-cell">
                         {client.phone}
-                        <a className="call-btn" href={`tel:+91${client.phone?.replace(/\s/g,'')}`}
-                          onClick={() => window.__stBanner?.(client.name, client.phone)}>
-                          <PhoneIcon />
-                        </a>
+                        <button className="call-btn"
+  onClick={() => makeExotelCall(client.phone, client.name, client._id, window.__stBanner)}>
+  <PhoneIcon />
+</button>
                       </div>
                     </td>
                     <td data-label="City" className="td-light">{client.city || '—'}</td>

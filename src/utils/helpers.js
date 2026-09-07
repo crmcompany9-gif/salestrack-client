@@ -64,6 +64,29 @@ export const outcomeLabel = (outcome) => {
   return map[outcome] || outcome;
 };
 
+// Initiate Exotel call — calls employee first then connects to client
+export const makeExotelCall = async (clientPhone, clientName, clientId, showBanner) => {
+  try {
+    showBanner?.(clientName, clientPhone);
+    const res = await fetch('/api/exotel/call', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('st_token')}`,
+      },
+      body: JSON.stringify({ clientPhone, clientName, clientId }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      alert(`Call failed: ${data.message}`);
+    } else {
+      alert(`Your phone will ring now. Pick up to connect to ${clientName}`);
+    }
+  } catch (err) {
+    alert('Failed to initiate call. Check your connection.');
+  }
+};
+
 // Phone SVG icon (reused everywhere)
 export const PhoneIcon = () => (
   <svg viewBox="0 0 24 24">

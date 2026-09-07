@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { initials, avatarColor, outcomeBadge, outcomeLabel, fmtDate, fmtDateTime, isOverdue, isDueSoon, PhoneIcon } from '../utils/helpers';
+import { initials, avatarColor, outcomeBadge, outcomeLabel, fmtDate, fmtDateTime, isOverdue, isDueSoon, PhoneIcon, makeExotelCall } from '../utils/helpers';
 import * as XLSX from 'xlsx';
 
 const FILTERS = [
@@ -155,10 +155,10 @@ export default function CallLogs() {
                       <td data-label="Phone">
                         <div className="call-cell">
                           {call.client?.phone}
-                          <a className="call-btn" href={`tel:+91${call.client?.phone?.replace(/\s/g,'')}`}
-                            onClick={() => window.__stBanner?.(call.client?.name, call.client?.phone)}>
-                            <PhoneIcon />
-                          </a>
+                       <button className="call-btn"
+  onClick={() => makeExotelCall(call.client?.phone, call.client?.name, call.client?._id, window.__stBanner)}>
+  <PhoneIcon />
+</button>
                         </div>
                       </td>
                       <td data-label="Type">
