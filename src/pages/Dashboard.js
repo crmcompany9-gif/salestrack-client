@@ -27,6 +27,46 @@ export default function Dashboard() {
       {/* Notice Board */}
       <NoticeBoard />
 
+{/* Follow-up alert */}
+{(data.overdue > 0 || data.followUpsDue > 0) && (
+  <div style={{
+    background: data.overdue > 0 ? 'var(--danger-bg)' : 'var(--warn-bg)',
+    border: `1px solid ${data.overdue > 0 ? 'var(--danger)' : 'var(--warn)'}`,
+    borderRadius: 'var(--radius-lg)',
+    padding: '14px 18px',
+    marginBottom: 16,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+  }}>
+    <div style={{display:'flex',alignItems:'center',gap:10}}>
+      <span style={{fontSize:20}}>{data.overdue > 0 ? '🚨' : '⏰'}</span>
+      <div>
+        <div style={{fontSize:13,fontWeight:600,color: data.overdue > 0 ? 'var(--danger-text)' : 'var(--warn-text)'}}>
+          {data.overdue > 0
+            ? `${data.overdue} overdue follow-up${data.overdue > 1 ? 's' : ''} — call them now`
+            : `${data.followUpsDue} follow-up${data.followUpsDue > 1 ? 's' : ''} due today`
+          }
+        </div>
+        <div style={{fontSize:11,color:'var(--text2)',marginTop:2}}>
+          Go to Clients page to see who needs a call
+        </div>
+      </div>
+    </div>
+    <button className="btn" style={{
+      fontSize:12,
+      borderColor: data.overdue > 0 ? 'var(--danger)' : 'var(--warn)',
+      color: data.overdue > 0 ? 'var(--danger-text)' : 'var(--warn-text)',
+      whiteSpace:'nowrap',
+      flexShrink:0
+    }}
+      onClick={() => navigate('/clients')}>
+      View clients →
+    </button>
+  </div>
+)}
+
       {/* Stats strip */}
       <div className="stats-grid">
         <div className="stat accent-left">
