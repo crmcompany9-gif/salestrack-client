@@ -26,11 +26,11 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Private><Layout /></Private>}>
-        <Route path="password" element={<ChangePassword />} />
           <Route index element={<Dashboard />} />
           <Route path="calls"   element={<CallLogs />} />
           <Route path="clients" element={<Clients />} />
           <Route path="log"     element={<LogCall />} />
+          <Route path="password" element={<ChangePassword />} />  
           <Route path="targets" element={<ManagerOnly><Targets /></ManagerOnly>} />
           <Route path="team"    element={<ManagerOnly><Team /></ManagerOnly>} />
         </Route>
