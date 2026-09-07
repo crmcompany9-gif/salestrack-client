@@ -8,6 +8,7 @@ import Clients from './pages/Clients';
 import LogCall from './pages/LogCall';
 import Targets from './pages/Targets';
 import Team from './pages/Team';
+import ChangePassword from './pages/ChangePassword';
 
 const Private = ({ children }) => {
   const { user } = useAuth();
@@ -25,6 +26,7 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Private><Layout /></Private>}>
+        <Route path="password" element={<ChangePassword />} />
           <Route index element={<Dashboard />} />
           <Route path="calls"   element={<CallLogs />} />
           <Route path="clients" element={<Clients />} />

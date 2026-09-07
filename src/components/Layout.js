@@ -94,6 +94,10 @@ export default function Layout() {
               <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
               Log a call
             </NavLink>
+            <NavLink to="/password" className={({isActive})=>`nav-item${isActive?' active':''}`}>
+  <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+  Change password
+</NavLink>
           </nav>
 
           <div className="sidebar-footer">
@@ -137,6 +141,10 @@ export default function Layout() {
 
       {/* ── Mobile bottom nav ── */}
       <nav className="bottom-nav">
+        <NavLink to="/password" className={({isActive})=>`nav-item${isActive?' active':''}`}>
+  <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+  Change password
+</NavLink>
         <NavLink to="/" end className={({isActive})=>`bn-item${isActive?' active':''}`}>
           <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
           Home
@@ -158,6 +166,7 @@ export default function Layout() {
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
             Targets
           </NavLink>
+          
         ) : (
           <button className="bn-item" onClick={handleLogout}>
             <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
