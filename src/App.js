@@ -9,6 +9,7 @@ import LogCall from './pages/LogCall';
 import Targets from './pages/Targets';
 import Team from './pages/Team';
 import ChangePassword from './pages/ChangePassword';
+import Incentives from './pages/Incentives';
 
 const Private = ({ children }) => {
   const { user } = useAuth();
@@ -26,6 +27,7 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Private><Layout /></Private>}>
+        <Route path="incentives" element={<Incentives />} />
           <Route index element={<Dashboard />} />
           <Route path="calls"   element={<CallLogs />} />
           <Route path="clients" element={<Clients />} />

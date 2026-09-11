@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'https://salestrack-server.onrender.com';
+axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 const AuthContext = createContext();
 
