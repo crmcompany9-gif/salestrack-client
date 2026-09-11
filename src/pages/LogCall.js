@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 
-const blank = { clientName:'', clientPhone:'', clientCity:'', callType:'cold', outcome:'interested', duration:'', notes:'', recordingLink:'', nextFollowUp:'', employee:'' };
+const blank = { clientName:'', clientPhone:'', clientCity:'', callType:'cold', outcome:'interested', duration:'', notes:'', recordingLink:'', nextFollowUp:'', employee:'', amountQuoted:'', amountCollected:'' };
 
 export default function LogCall() {
   const { user } = useAuth();
@@ -106,7 +106,17 @@ export default function LogCall() {
             <textarea placeholder="What was discussed, objections raised, next steps…"
               value={form.notes} onChange={e => set('notes', e.target.value)} />
           </div>
+<div className="field">
+  <label>Amount quoted (₹)</label>
+  <input type="number" placeholder="0" min="0" value={form.amountQuoted}
+    onChange={e => set('amountQuoted', e.target.value)} />
+</div>
 
+<div className="field">
+  <label>Amount collected (₹)</label>
+  <input type="number" placeholder="0" min="0" value={form.amountCollected}
+    onChange={e => set('amountCollected', e.target.value)} />
+</div>
           <div className="field full">
             <label>Recording link (optional)</label>
             <input type="url" placeholder="https://drive.google.com/…" value={form.recordingLink}

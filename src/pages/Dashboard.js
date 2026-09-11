@@ -148,6 +148,8 @@ export default function Dashboard() {
                 <th>Type</th>
                 <th>Outcome</th>
                 <th>Date &amp; time</th>
+<th>Quoted (₹)</th>
+<th>Collected (₹)</th>
               </tr>
             </thead>
             <tbody>
@@ -176,6 +178,12 @@ export default function Dashboard() {
                   <td><span className={`badge badge-${call.callType}`}><span className="dot"/>{call.callType === 'cold' ? 'Cold' : 'Follow-up'}</span></td>
                   <td><span className={`badge ${outcomeBadge(call.outcome)}`}><span className="dot"/>{outcomeLabel(call.outcome)}</span></td>
                   <td className="td-light">{fmtDateTime(call.callDate)}</td>
+                  <td className="td-light">
+  {call.amountQuoted > 0 ? `₹${call.amountQuoted.toLocaleString('en-IN')}` : '—'}
+</td>
+<td className="td-light">
+  {call.amountCollected > 0 ? `₹${call.amountCollected.toLocaleString('en-IN')}` : '—'}
+</td>
                 </tr>
               ))}
             </tbody>
