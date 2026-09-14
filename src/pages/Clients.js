@@ -54,6 +54,16 @@ export default function Clients() {
     }
   };
 
+    const handleDelete = async (clientId, clientName) => {
+    if (!window.confirm(`Delete "${clientName}"? This will also delete all their call logs. This cannot be undone.`)) return;
+    try {
+      await axios.delete(`/api/clients/${clientId}`);
+      setClients(prev => prev.filter(c => c._id !== clientId));
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to delete client');
+    }
+  };
+
   if (loading) return <div className="loading">Loading clients…</div>;
 
   return (
@@ -133,24 +143,33 @@ export default function Clients() {
                     <td data-label="Total calls" className="td-light">{client.totalCalls}</td>
 
                     {/* Send to ERP — manager only */}
-                    {isManager && (
-                      <td data-label="ERP">
-                        {client.sentToERP ? (
-                          <span style={{fontSize:11,color:'var(--success-text)',fontWeight:600}}>✓ In ERP</span>
-                        ) : client.status === 'interested' ? (
-                          <button
-                            className="btn primary"
-                            style={{fontSize:11,padding:'4px 10px',background:'var(--success)',borderColor:'var(--success)'}}
-                            onClick={() => sendToERP(client)}
-                            disabled={sending === client._id}
-                          >
-                            {sending === client._id ? 'Sending…' : 'Send to ERP'}
-                          </button>
-                        ) : (
-                          <span style={{fontSize:11,color:'var(--text3)'}}>—</span>
-                        )}
-                      </td>
-                    )}
+                   {isManager && (
+  <td data-label="ERP">
+    <div style={{display:'flex',flexDirection:'column',gap:4}}>
+      {client.sentToERP ? (
+        <span style={{fontSize:11,color:'var(--success-text)',fontWeight:600}}>✓ In ERP</span>
+      ) : client.status === 'interested' ? (
+        <button
+          className="btn primary"
+          style={{fontSize:11,padding:'4px 10px',background:'var(--success)',borderColor:'var(--success)'}}
+          onClick={() => sendToERP(client)}
+          disabled={sending === client._id}
+        >
+          {sending === client._id ? 'Sending…' : 'Send to ERP'}
+        </button>
+      ) : (
+        <span style={{fontSize:11,color:'var(--text3)'}}>—</span>
+      )}
+      <button
+        className="btn danger-btn"
+        style={{fontSize:11,padding:'4px 10px'}}
+        onClick={() => handleDelete(client._id, client.name)}
+      >
+        🗑 Delete
+      </button>
+    </div>
+  </td>
+)}
                   </tr>
                 );
               })}
