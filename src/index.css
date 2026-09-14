@@ -329,3 +329,7 @@ textarea { resize:vertical; min-height:80px; line-height:1.5; }
   }
   .bn-item.log-btn svg { stroke: #fff; }
 }
+
+@media (max-width: 768px) {
+  .mobile-greeting { display: block !important; }
+}
