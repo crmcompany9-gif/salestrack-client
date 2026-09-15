@@ -91,18 +91,18 @@ export default function Incentives() {
                 </div>
 
                 {/* Stats grid */}
-                <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:12}}>
+                <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:10}}>
                   <div className="stat accent-left">
                     <div className="stat-label">Collected</div>
-                    <div className="stat-value" style={{fontSize:18}}>{fmt(r.totalCollected)}</div>
+                    <div className="stat-value" style={{fontSize:16}}>{fmt(r.totalCollected)}</div>
                   </div>
                   <div className="stat success-left">
                     <div className="stat-label">Target</div>
-                    <div className="stat-value" style={{fontSize:18}}>{fmt(r.target)}</div>
+                    <div className="stat-value" style={{fontSize:16}}>{fmt(r.target)}</div>
                   </div>
                   <div className={`stat ${r.crossed ? 'success-left' : 'warn-left'}`}>
                     <div className="stat-label">Above target</div>
-                    <div className="stat-value" style={{fontSize:18}}>{fmt(r.aboveTarget)}</div>
+                    <div className="stat-value" style={{fontSize:16}}>{fmt(r.aboveTarget)}</div>
                   </div>
                   <div className="stat purple-left">
                     <div className="stat-label">Incentive earned</div>

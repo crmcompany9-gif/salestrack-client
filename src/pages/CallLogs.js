@@ -45,14 +45,16 @@ export default function CallLogs() {
 
   const openEdit = (call) => {
     setEditing(call._id);
-    setEditForm({
-      callType: call.callType,
-      outcome: call.outcome,
-      duration: call.duration || '',
-      notes: call.notes || '',
-      recordingLink: call.recordingLink || '',
-      nextFollowUp: call.nextFollowUp ? call.nextFollowUp.slice(0, 10) : '',
-    });
+   setEditForm({
+  callType:        call.callType,
+  outcome:         call.outcome,
+  duration:        call.duration || '',
+  notes:           call.notes || '',
+  recordingLink:   call.recordingLink || '',
+  nextFollowUp:    call.nextFollowUp ? call.nextFollowUp.slice(0,10) : '',
+  amountQuoted:    call.amountQuoted || '',
+  amountCollected: call.amountCollected || '',
+});
   };
 
   const closeEdit = () => { setEditing(null); setEditForm({}); };
@@ -228,6 +230,14 @@ export default function CallLogs() {
                                 <label>Next follow-up date</label>
                                 <input type="date" value={editForm.nextFollowUp} onChange={e => setF('nextFollowUp', e.target.value)} />
                               </div>
+                              <div className="field">
+  <label>Amount quoted (₹)</label>
+  <input type="number" min="0" value={editForm.amountQuoted||''} onChange={e => setF('amountQuoted', e.target.value)} />
+</div>
+<div className="field">
+  <label>Amount collected (₹)</label>
+  <input type="number" min="0" value={editForm.amountCollected||''} onChange={e => setF('amountCollected', e.target.value)} />
+</div>
                               <div className="field full">
                                 <label>Notes</label>
                                 <textarea value={editForm.notes} onChange={e => setF('notes', e.target.value)} style={{ minHeight: 60 }} />

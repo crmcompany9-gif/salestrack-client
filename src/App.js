@@ -8,7 +8,7 @@ import Clients from './pages/Clients';
 import LogCall from './pages/LogCall';
 import Targets from './pages/Targets';
 import Team from './pages/Team';
-import ChangePassword from './pages/ChangePassword';
+
 import Incentives from './pages/Incentives';
 
 const Private = ({ children }) => {
@@ -32,7 +32,7 @@ export default function App() {
           <Route path="calls"   element={<CallLogs />} />
           <Route path="clients" element={<Clients />} />
           <Route path="log"     element={<LogCall />} />
-          <Route path="password" element={<ChangePassword />} />  
+          
           <Route path="targets" element={<ManagerOnly><Targets /></ManagerOnly>} />
           <Route path="team"    element={<ManagerOnly><Team /></ManagerOnly>} />
         </Route>
