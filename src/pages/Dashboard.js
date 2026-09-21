@@ -5,6 +5,8 @@ import { useAuth } from '../context/AuthContext';
 import { initials, avatarColor, outcomeBadge, outcomeLabel, fmtDateTime, PhoneIcon } from '../utils/helpers';
 import NoticeBoard from '../components/NoticeBoard';
 
+const GEMINI_KEY = process.env.REACT_APP_GEMINI_KEY;
+
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
