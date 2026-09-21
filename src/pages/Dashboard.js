@@ -11,39 +11,141 @@ export default function Dashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const isManager = user?.role === 'manager';
+  const [brief, setBrief]           = useState('');
+const [briefLoading, setBriefLoading] = useState(false);
+const [briefGenerated, setBriefGenerated] = useState(false);
 
   useEffect(() => {
-    document.getElementById('page-title').textContent = 'Dashboard';
-    axios.get('/api/dashboard').then(r => { setData(r.data); setLoading(false); });
-  }, []);
+  document.getElementById('page-title').textContent = 'Dashboard';
+  axios.get('/api/dashboard').then(r => {
+    setData(r.data);
+    setLoading(false);
+    generateBrief({ ...r.data, userName: user?.name });
+  });
+}, []);
 
   const fillColor = (pct) => pct >= 80 ? 'fill-green' : pct >= 50 ? 'fill-blue' : 'fill-warn';
+
+  const generateBrief = async (dashData) => {
+  setBriefLoading(true);
+  try {
+    const prompt = isManager
+      ? `You are a sales manager assistant for Elbow Grease Business Solutions, an Indian business consultancy.
+Generate a sharp morning brief in 4-5 bullet points based on this dashboard data.
+Be direct, actionable, and specific. Use Indian business context.
+Data:
+- Overdue follow-ups: ${dashData.overdue}
+- Follow-ups due today: ${dashData.followUpsDue}
+- Calls today so far: ${dashData.callsToday}
+- Interested today: ${dashData.interestedToday}
+- Calls this month total: ${dashData.callsThisMonth}
+- Team target progress: ${dashData.targetPct}%
+- Team stats: ${JSON.stringify(dashData.teamStats?.map(e => ({name: e.name, calls: e.calls, pct: e.pct})))}
+Write 4-5 bullet points starting with an emoji. Be motivating but honest. End with one action priority.`
+      : `You are a sales coach assistant for Elbow Grease Business Solutions.
+Generate a personal morning brief for ${dashData.userName || 'the sales executive'} in 3-4 bullet points.
+Be direct, motivating, and specific. Use Indian business context.
+Data:
+- Overdue follow-ups: ${dashData.overdue}
+- Follow-ups due today: ${dashData.followUpsDue}
+- Calls today: ${dashData.callsToday}
+- Calls this month: ${dashData.callsThisMonth}
+- Target progress: ${dashData.targetPct}%
+Write 3-4 bullet points starting with an emoji. Be encouraging. End with today's top priority.`;
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { maxOutputTokens: 300, temperature: 0.7 }
+        })
+      }
+    );
+    const result = await response.json();
+    const text = result.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    if (text) setBrief(text);
+  } catch (err) {
+    console.error('Brief generation failed:', err);
+  } finally {
+    setBriefLoading(false);
+    setBriefGenerated(true);
+  }
+};
+
   const pctColor = (pct) => pct >= 80 ? 'pct-green' : pct >= 50 ? 'pct-blue' : 'pct-warn';
 
   if (loading) return <div className="loading">Loading dashboard…</div>;
 
   return (
     <>
-    {/* Mobile greeting — only shows on mobile */}
-<div style={{
-  display:'none',
-  marginBottom: 16,
-  padding: '12px 14px',
-  background: 'var(--surface)',
-  border: '1px solid var(--border)',
-  borderRadius: 'var(--radius-lg)',
-  boxShadow: 'var(--shadow-sm)',
-}} className="mobile-greeting">
-  <div style={{fontSize:11,color:'var(--text3)',fontWeight:600,textTransform:'uppercase',letterSpacing:'0.06em',marginBottom:2}}>
-    Logged in as
+      {/* Mobile greeting — only shows on mobile */}
+      <div style={{
+        display: 'none',
+        marginBottom: 16,
+        padding: '12px 14px',
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--radius-lg)',
+        boxShadow: 'var(--shadow-sm)',
+      }} className="mobile-greeting">
+        <div style={{ fontSize: 11, color: 'var(--text3)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 2 }}>
+          Logged in as
+        </div>
+        <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text)', letterSpacing: '-0.01em' }}>
+          👋 {user?.name}
+        </div>
+        <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>
+          {isManager ? 'Manager' : 'Sales executive'}
+        </div>
+      </div>
+      {/* AI Daily Brief */}
+{(briefLoading || brief) && (
+  <div style={{
+    background: 'linear-gradient(135deg, #1D4ED8 0%, #7C3AED 100%)',
+    borderRadius: 'var(--radius-xl)',
+    padding: '18px 22px',
+    marginBottom: 20,
+    color: '#fff',
+    boxShadow: '0 4px 20px rgba(37,99,235,0.25)',
+  }}>
+    <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:10}}>
+      <div style={{display:'flex',alignItems:'center',gap:8}}>
+        <span style={{fontSize:18}}>✨</span>
+        <span style={{fontSize:13,fontWeight:700,letterSpacing:'-0.01em'}}>
+          AI Morning Brief
+        </span>
+      </div>
+      {!briefLoading && (
+        <button
+          onClick={() => generateBrief({...data, userName: user?.name})}
+          style={{
+            background:'rgba(255,255,255,0.15)',
+            border:'1px solid rgba(255,255,255,0.3)',
+            color:'#fff',
+            fontSize:11,
+            padding:'3px 10px',
+            borderRadius:20,
+            cursor:'pointer',
+            fontWeight:600,
+          }}>
+          Refresh
+        </button>
+      )}
+    </div>
+    {briefLoading ? (
+      <div style={{fontSize:12,opacity:0.8,fontStyle:'italic'}}>
+        ✨ Generating your morning brief…
+      </div>
+    ) : (
+      <div style={{fontSize:13,lineHeight:1.7,whiteSpace:'pre-line',opacity:0.95}}>
+        {brief}
+      </div>
+    )}
   </div>
-  <div style={{fontSize:15,fontWeight:600,color:'var(--text)',letterSpacing:'-0.01em'}}>
-    👋 {user?.name}
-  </div>
-  <div style={{fontSize:11,color:'var(--text3)',marginTop:2}}>
-    {isManager ? 'Manager' : 'Sales executive'}
-  </div>
-</div>
+)}
       {/* Notice Board */}
       <NoticeBoard />
 
