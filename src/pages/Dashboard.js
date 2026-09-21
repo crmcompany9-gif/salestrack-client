@@ -17,12 +17,21 @@ export default function Dashboard() {
 const [briefLoading, setBriefLoading] = useState(false);
 const [briefGenerated, setBriefGenerated] = useState(false);
 
-  useEffect(() => {
+ useEffect(() => {
   document.getElementById('page-title').textContent = 'Dashboard';
   axios.get('/api/dashboard').then(r => {
     setData(r.data);
     setLoading(false);
-    generateBrief({ ...r.data, userName: user?.name });
+    // Only generate brief once per session
+    const lastBrief = sessionStorage.getItem('eg_brief_time');
+    const now = Date.now();
+    if (!lastBrief || now - parseInt(lastBrief) > 3600000) { // once per hour
+      generateBrief({ ...r.data, userName: user?.name });
+      sessionStorage.setItem('eg_brief_time', now.toString());
+    } else {
+      const saved = sessionStorage.getItem('eg_brief');
+      if (saved) setBrief(saved);
+    }
   });
 }, []);
 
@@ -68,7 +77,10 @@ Write 3-4 bullet points starting with an emoji. Be encouraging. End with today's
     );
     const result = await response.json();
     const text = result.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-    if (text) setBrief(text);
+   if (text) {
+  setBrief(text);
+  sessionStorage.setItem('eg_brief', text);
+}
   } catch (err) {
     console.error('Brief generation failed:', err);
   } finally {
